@@ -1,0 +1,25 @@
+version: '3'
+services:
+  web:
+    stdin_open: true 
+    build:
+      #Current working directory
+      context: .
+      dockerfile: Dockerfile.dev
+    ports:
+      - "3000:3000"
+    volumes:
+      #zwei verschiedene Volume-Mounts eingerichtet, um eine Art Lesezeichen zu setzen
+      #Im ersten, auf die node-module innerhalb des Container - um diese zu behalten, da wir lokal keine haben
+      #Und die andere, um alle unsere Quellcodedateien von unserem lokalen Computer in das Container-App-Verzeichnis abzubilden.
+      - /app/node_modules
+      - .:/app
+  #Test-Service
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    volumes:
+      - /app/node_modules
+      - .:/app
+    command: ["npm", "run", "test"]
